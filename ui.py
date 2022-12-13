@@ -3,6 +3,7 @@ from tkinter import ttk
 from tkinter.messagebox import askokcancel, WARNING 
 from components.center_widget_mixin import CenterWidgetMixin
 from components.create_client_window import CreateClientWindow
+from components.update_client_window import UpdateClientWindow
 import database as db
 
 class MainWindow(Tk, CenterWidgetMixin):
@@ -46,7 +47,7 @@ class MainWindow(Tk, CenterWidgetMixin):
         footer.pack(pady=20)
         
         Button(footer, text="Crear registro", command=self.create).grid(row=0, column=0, sticky=W)
-        Button(footer, text="Modificar registro", command=None).grid(row=0, column=1, sticky=W)
+        Button(footer, text="Modificar registro", command=self.edit).grid(row=0, column=1, sticky=W)
         Button(footer, text="Eliminar registro", command=self.delete).grid(row=0, column=2, sticky=W)
         
         self.treeview = treeView
@@ -61,9 +62,14 @@ class MainWindow(Tk, CenterWidgetMixin):
                 icon=WARNING)
             if confirm:
                 self.treeview.delete(client)
+                db.Clients.delete(fields[0])
         
     def create(self):
         CreateClientWindow(self)
+        
+    def edit(self):
+        if self.treeview.focus():
+            UpdateClientWindow(self)
     
 
 if __name__ == '__main__':
